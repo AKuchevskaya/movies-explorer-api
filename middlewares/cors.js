@@ -1,8 +1,10 @@
 const allowedCors = [
-  'https://mesto.kuchevskaya.nomoredomains.xyz',
-  'http://mesto.kuchevskaya.nomoredomains.xyz',
-  'http://api.mesto.kuchevskaya.nomoredomains.xyz',
-  'https://api.mesto.kuchevskaya.nomoredomains.xyz',
+  'https://films.kuchevskaya.nomoredomains.sbs',
+  'http://films.kuchevskaya.nomoredomains.sbs',
+  'http://api.films.kuchevskaya.nomoredomains.sbs',
+  'https://api.films.kuchevskaya.nomoredomains.sbs',
+  'http://localhost:3000',
+  'http://localhost:3001',
 ];
 
 module.exports = ((req, res, next) => {

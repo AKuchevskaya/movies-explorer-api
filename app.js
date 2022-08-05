@@ -14,9 +14,10 @@ const cors = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { regex } = require('./constants/regex');
+// const { regex } = require('./constants/regex');
+const { LOCAL_DB } = require('./constants/config');
 
-const { PORT = 3000 } = process.env;
+const { NODE_ENV, PORT = 3000, DB } = process.env;
 const app = express();
 const {
   SERVER_ERROR_CODE,
@@ -24,7 +25,8 @@ const {
 
 const NotFoundError = require('./errors/NotFoundError'); // 404
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+// mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(NODE_ENV === 'production' ? DB : LOCAL_DB);
 app.use(cors); // подключаем cors
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,8 +42,8 @@ app.use(requestLogger); // подключаем логгер запросов
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(regex),
+    // about: Joi.string().min(2).max(30),
+    // avatar: Joi.string().pattern(regex),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(4),
   }),
