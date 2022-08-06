@@ -9,4 +9,4 @@ https://films.kuchevskaya.nomoredomains.sbs
 https://api.films.kuchevskaya.nomoredomains.sbs
 
 ## Публичный IP
-130.193.55.129
+84.201.153.214
