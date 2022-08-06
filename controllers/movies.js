@@ -15,15 +15,40 @@ module.exports.getMovies = (req, res, next) => {
 };
 
 module.exports.createMovie = (req, res, next) => {
-  const { name, link } = req.body;
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+  } = req.body;
 
-  Movie.create({ name, link, owner: req.user._id })
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+    owner: req.user._id,
+  })
     .then((movie) => {
       res.status(SUCCESSFUL_STATUS_CODE).send(movie);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadReqError('Переданы некорректные данные при создании карточки.'));
+        next(new BadReqError('Переданы некорректные данные при создании фильма.'));
       } else {
         next(err);
       }
@@ -31,53 +56,19 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId)
-    .orFail(new NotFoundError('Карточка с указанным _id не найдена.'))
+  Movie.findById(req.params.id)
+    .orFail(new NotFoundError('Фильм с указанным _id не найден.'))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id) {
         throw (new ForbiddenError('У вас нет необходимых прав для удаления.'));
       }
-      Movie.findByIdAndRemove({ _id: req.params.movieId })
+      Movie.findByIdAndRemove(req.params.id)
         .then((removedMovie) => res.status(SUCCESSFUL_STATUS_CODE).send(removedMovie))
         .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadReqError('Переданы некорректные данные для удаления карточки'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-module.exports.likeMovie = (req, res, next) => {
-  Movie.findByIdAndUpdate(
-    { _id: req.params.movieId },
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(new NotFoundError('Передан несуществующий _id карточки'))
-    .then((movie) => res.status(SUCCESSFUL_STATUS_CODE).send(movie))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadReqError('Переданы некорректные данные для постановки/снятия лайка'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-module.exports.dislikeMovie = (req, res, next) => {
-  Movie.findByIdAndUpdate(
-    { _id: req.params.movieId },
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(new NotFoundError('Передан несуществующий _id карточки'))
-    .then((movie) => res.status(SUCCESSFUL_STATUS_CODE).send(movie))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadReqError('Переданы некорректные данные для постановки/снятия лайка'));
+        next(new BadReqError('Переданы некорректные данные для удаления фильма'));
       } else {
         next(err);
       }

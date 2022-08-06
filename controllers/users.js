@@ -29,7 +29,12 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-      }).send({ token });
+      }).send({
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      });
+      // }).send({ token });
     })
     .catch(next);
 };
@@ -73,12 +78,6 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-// module.exports.getUsers = (req, res, next) => {
-//   User.find({})
-//     .then((users) => res.send(users))
-//     .catch(next);
-// };
-
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new NotFoundError('Передан несуществующий _id пользователя'))
@@ -86,22 +85,6 @@ module.exports.getUser = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => next(err));
-};
-
-module.exports.findUser = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail(new NotFoundError('Пользователь не найден'))
-    .then((user) => {
-      res.send(user);
-      // res.send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadReqError('Передан некорректный _id пользователя'));
-      } else {
-        next(err);
-      }
-    });
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -127,27 +110,3 @@ module.exports.updateUser = (req, res, next) => {
       }
     });
 };
-
-// module.exports.updateAvatar = (req, res, next) => {
-//   const { avatar } = req.body;
-
-//   User.findByIdAndUpdate(
-//     req.user._id,
-//     { avatar },
-//     {
-//       new: true,
-//       runValidators: true,
-//     },
-//   )
-//     .orFail(() => {
-//       next(new NotFoundError('Передан несуществующий _id пользователя'));
-//     })
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'CastError' || err.name === 'ValidationError') {
-//         next(new BadReqError('Переданы некорректные данные при обновлении аватара профиля'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };

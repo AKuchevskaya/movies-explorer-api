@@ -27,20 +27,6 @@ const userSchema = new mongoose.Schema({
     minlength: [2, 'Слишком короткое имя'],
     maxlength: [30, 'Имя слишком длинное, максимум 30 символов'],
   },
-  // about: {
-  //   type: String,
-  //   default: 'Исследователь',
-  //   minlength: [2, 'Расскажите о себе больше'],
-  //   maxlength: [30, 'К сожалению это поле ограничено, максимум 30 символов'],
-  // },
-  // avatar: {
-  //   type: String,
-  //   default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-  //   validate: {
-  //     validator(v) { return regex.test(v); },
-  //     message: () => 'Неверный формат ссылки на изображение',
-  //   },
-  // },
 });
 
 // добавим метод findUserByCredentials схеме пользователя

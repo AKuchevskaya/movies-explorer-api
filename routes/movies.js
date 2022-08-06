@@ -6,14 +6,22 @@ const {
   createMovie,
   getMovies,
   deleteMovie,
-  // likeMovie,
-  // dislikeMovie,
 } = require('../controllers/movies');
 
 routerMovie.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(regex),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
+    duration: Joi.number().required(),
+    year: Joi.string().required(),
+    description: Joi.string().required(),
+    image: Joi.string().required().pattern(regex),
+    trailerLink: Joi.string().required().pattern(regex),
+    thumbnail: Joi.string().required().pattern(regex),
+    owner: Joi.string().length(24).hex(),
+    movieId: Joi.number().required(),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
   }),
 }), createMovie);
 
@@ -24,17 +32,5 @@ routerMovie.delete('/:movieId', celebrate({
     movieId: Joi.string().required().hex().length(24),
   }),
 }), deleteMovie);
-
-// routerMovie.put('/:movieId/likes', celebrate({
-//   params: Joi.object().keys({
-//     movieId: Joi.string().required().length(24).hex(),
-//   }),
-// }), likeMovie);
-
-// routerMovie.delete('/:movieId/likes', celebrate({
-//   params: Joi.object().keys({
-//     movieId: Joi.string().required().length(24).hex(),
-//   }),
-// }), dislikeMovie);
 
 module.exports = routerMovie;

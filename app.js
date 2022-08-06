@@ -1,8 +1,8 @@
 require('dotenv').config();
 
-console.log(process.env.NODE_ENV); // production
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { Joi, celebrate, errors } = require('celebrate');
@@ -14,7 +14,6 @@ const cors = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-// const { regex } = require('./constants/regex');
 const { LOCAL_DB } = require('./constants/config');
 
 const { NODE_ENV, PORT = 3000, DB } = process.env;
@@ -25,9 +24,9 @@ const {
 
 const NotFoundError = require('./errors/NotFoundError'); // 404
 
-// mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
 mongoose.connect(NODE_ENV === 'production' ? DB : LOCAL_DB);
 app.use(cors); // подключаем cors
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -42,8 +41,6 @@ app.use(requestLogger); // подключаем логгер запросов
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    // about: Joi.string().min(2).max(30),
-    // avatar: Joi.string().pattern(regex),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(4),
   }),

@@ -7,14 +7,15 @@ const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
 module.exports = (req, res, next) => {
   // достаём авторизационный заголовок
   const token = req.cookies.jwt;
-
+  // console.log('token', req.cookies.jwt);
   if (!token) {
     throw new UnauthorizedError('Пожалуйста авторизуйтесь.');
   }
 
   // верифицируем токен
   let payload;
-  console.log('token', token);
+  // console.log('token', token);
+
   try {
     // попытаемся верифицировать токен
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY);
