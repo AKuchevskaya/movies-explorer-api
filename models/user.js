@@ -19,11 +19,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Обязательно придумайте уникальный пароль'],
-    minlength: [4, 'Длинна пароля должна составлять минимум 4 символа, содержать '],
     select: false, // запрет на возвращение пароля
   },
   name: {
     type: String,
+    required: [true, 'Поле name обязательное'],
     minlength: [2, 'Слишком короткое имя'],
     maxlength: [30, 'Имя слишком длинное, максимум 30 символов'],
   },

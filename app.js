@@ -11,6 +11,7 @@ const auth = require('./middlewares/auth');
 const routerUser = require('./routes/users');
 const routerMovie = require('./routes/movies');
 const cors = require('./middlewares/cors');
+const { limiter } = require('./middlewares/limiter');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -38,27 +39,31 @@ app.get('/crash-test', () => { // краш-тест сервера
 });
 
 app.use(requestLogger); // подключаем логгер запросов
+app.use(limiter);
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(4),
+    password: Joi.string().required(),
   }),
 }), createUser);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(4),
+    password: Joi.string().required(),
   }),
 }), login);
 app.use(auth);
 app.post('/signout', logout);
 app.use('/users', routerUser);
 app.use('/movies', routerMovie);
-app.use(errorLogger);
+
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не существует'));
 });
+
+app.use(errorLogger);
 
 app.use(errors({ message: 'Проверьте корректность введенных данных' }));
 

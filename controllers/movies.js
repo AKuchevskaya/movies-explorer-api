@@ -8,7 +8,7 @@ const ForbiddenError = require('../errors/ForbiddenError'); // 403
 const NotFoundError = require('../errors/NotFoundError'); // 404
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     // .populate('owner')
     .then((movies) => res.status(SUCCESSFUL_STATUS_CODE).send(movies))
     .catch(next);
