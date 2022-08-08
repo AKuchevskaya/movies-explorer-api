@@ -5,11 +5,13 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { Joi, celebrate, errors } = require('celebrate');
-const { login, createUser, logout } = require('./controllers/users');
-const auth = require('./middlewares/auth');
-const routerUser = require('./routes/users');
-const routerMovie = require('./routes/movies');
+const { errors } = require('celebrate');
+// const { Joi, celebrate, errors } = require('celebrate');
+// const { login, createUser, logout } = require('./controllers/users');
+// const auth = require('./middlewares/auth');
+// const routerUser = require('./routes/users');
+// const routerMovie = require('./routes/movies');
+const routes = require('./routes');
 const cors = require('./middlewares/cors');
 const { limiter } = require('./middlewares/limiter');
 
@@ -23,7 +25,7 @@ const {
   SERVER_ERROR_CODE,
 } = require('./constants/errors');
 
-const NotFoundError = require('./errors/NotFoundError'); // 404
+// const NotFoundError = require('./errors/NotFoundError'); // 404
 
 mongoose.connect(NODE_ENV === 'production' ? DB : LOCAL_DB);
 app.use(cors); // подключаем cors
@@ -40,28 +42,28 @@ app.get('/crash-test', () => { // краш-тест сервера
 
 app.use(requestLogger); // подключаем логгер запросов
 app.use(limiter);
+app.use(routes);
+// app.post('/signup', celebrate({
+//   body: Joi.object().keys({
+//     name: Joi.string().min(2).max(30),
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), createUser);
+// app.post('/signin', celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required().email(),
+//     password: Joi.string().required(),
+//   }),
+// }), login);
+// app.use(auth);
+// app.post('/signout', logout);
+// app.use('/users', routerUser);
+// app.use('/movies', routerMovie);
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-app.use(auth);
-app.post('/signout', logout);
-app.use('/users', routerUser);
-app.use('/movies', routerMovie);
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не существует'));
-});
+// app.use((req, res, next) => {
+//   next(new NotFoundError('Страница не существует'));
+// });
 
 app.use(errorLogger);
 
