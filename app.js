@@ -6,12 +6,8 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-// const { Joi, celebrate, errors } = require('celebrate');
-// const { login, createUser, logout } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
-// const routerUser = require('./routes/users');
-// const routerMovie = require('./routes/movies');
-const routes = require('./routes');
+
+const routes = require('./routes/index');
 const cors = require('./middlewares/cors');
 const { limiter } = require('./middlewares/limiter');
 
@@ -22,10 +18,10 @@ const { LOCAL_DB } = require('./constants/config');
 const { NODE_ENV, PORT = 3000, DB } = process.env;
 const app = express();
 const {
-  SERVER_ERROR_CODE,
+  CAST_OR_VALIDATION_ERROR_MESSAGE,
+  CRASH_ERROR_MESSAGE,
 } = require('./constants/errors');
-
-// const NotFoundError = require('./errors/NotFoundError'); // 404
+const centralErrorsHandler = require('./middlewares/centralErrorsHandler');
 
 mongoose.connect(NODE_ENV === 'production' ? DB : LOCAL_DB);
 app.use(cors); // подключаем cors
@@ -36,47 +32,19 @@ app.use(cookieParser());
 
 app.get('/crash-test', () => { // краш-тест сервера
   setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
+    throw new Error(CRASH_ERROR_MESSAGE);
   }, 0);
 });
 
 app.use(requestLogger); // подключаем логгер запросов
 app.use(limiter);
 app.use(routes);
-// app.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     name: Joi.string().min(2).max(30),
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//   }),
-// }), createUser);
-// app.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().email(),
-//     password: Joi.string().required(),
-//   }),
-// }), login);
-// app.use(auth);
-// app.post('/signout', logout);
-// app.use('/users', routerUser);
-// app.use('/movies', routerMovie);
-
-// app.use((req, res, next) => {
-//   next(new NotFoundError('Страница не существует'));
-// });
 
 app.use(errorLogger);
 
-app.use(errors({ message: 'Проверьте корректность введенных данных' }));
+app.use(errors({ message: CAST_OR_VALIDATION_ERROR_MESSAGE }));
 
-app.use((err, req, res, next) => {
-  if (err.statusCode === 500) {
-    res.status(SERVER_ERROR_CODE).send({ message: 'Ошибка сервера по умолчанию' });
-  } else {
-    res.status(err.statusCode).send({ message: err.message });
-    next();
-  }
-});
+app.use(centralErrorsHandler);
 
 app.listen(PORT, () => {
   console.log('App started', PORT);
