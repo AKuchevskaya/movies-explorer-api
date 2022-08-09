@@ -3,30 +3,37 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
 // const { regex } = require('../constants/regex');
-const { UNAUTHORIZED_ERROR_MESSAGE } = require('../constants/errors');
+const {
+  UNAUTHORIZED_ERROR_MESSAGE,
+  TOTAL_ERROR_CREATION_MESSAGE,
+  WRONG_EMAIL_ERROR_MESSAGE,
+  DUPLICATE_EMAIL_ERROR_MESSAGE,
+  SHORT_WORD_ERROR_MESSAGE,
+  LONG_WORD_ERROR_MESSAGE,
+} = require('../constants/errors');
 const UnauthorizedError = require('../errors/UnauthorizedError'); // 401
 
 // описываем модель
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Поле email обязательное'],
-    unique: [true, 'Пользователь с такой почтой уже существует'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
+    unique: [true, DUPLICATE_EMAIL_ERROR_MESSAGE],
     validate: {
       validator: (v) => validator.isEmail(v),
-      message: () => 'Неверный формат email',
+      message: () => WRONG_EMAIL_ERROR_MESSAGE,
     },
   },
   password: {
     type: String,
-    required: [true, 'Обязательно придумайте уникальный пароль'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
     select: false, // запрет на возвращение пароля
   },
   name: {
     type: String,
-    required: [true, 'Поле name обязательное'],
-    minlength: [2, 'Слишком короткое имя'],
-    maxlength: [30, 'Имя слишком длинное, максимум 30 символов'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
+    minlength: [2, SHORT_WORD_ERROR_MESSAGE],
+    maxlength: [30, LONG_WORD_ERROR_MESSAGE],
   },
 });
 

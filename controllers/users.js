@@ -11,6 +11,7 @@ const {
   CAST_OR_VALIDATION_ERROR_MESSAGE,
   NOT_FOUND_DATA_MESSAGE,
   CONFLICT_EMAIL_ERROR_MESSAGE,
+  UNAUTHORIZED_MESSAGE,
 } = require('../constants/errors');
 
 const BadReqError = require('../errors/BadReqError'); // 400
@@ -45,7 +46,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.logout = (req, res) => {
   res.clearCookie('jwt', { httpOnly: true, sameSite: true })
-    .send({ message: 'Пользователь больше не авторизован' });
+    .send({ message: UNAUTHORIZED_MESSAGE });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -103,7 +104,7 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadReqError(CAST_OR_VALIDATION_ERROR_MESSAGE));
-      } if (err.name === 'MongoServerError' && err.code === MONGO_DUPLICATE_ERROR_CODE) {
+      } if (err.name === 'MongoServerError' || err.code === MONGO_DUPLICATE_ERROR_CODE) {
         next(new ConflictError(CONFLICT_EMAIL_ERROR_MESSAGE));
       } else {
         next(err);

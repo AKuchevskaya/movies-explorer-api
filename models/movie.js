@@ -1,56 +1,57 @@
 const mongoose = require('mongoose');
 const { regex } = require('../constants/regex');
+const { TOTAL_ERROR_CREATION_MESSAGE, WRONG_LINK_ERROR_MESSAGE } = require('../constants/errors');
 
 // описываем модель
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
-    required: [true, 'Обязательно добавьте страну создания фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   director: {
     type: String,
-    required: [true, 'Обязательно добавьте режиссера фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   duration: {
     type: Number,
-    required: [true, 'Обязательно добавьте продолжительность фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   year: {
     type: String,
-    required: [true, 'Обязательно добавьте год выпуска фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   description: {
     type: String,
-    required: [true, 'Обязательно добавьте краткое описание фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   image: {
     type: String,
-    required: [true, 'Обязательно добавьте ссылку на постер к фильму'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
     validate: {
       validator(v) { return regex.test(v); },
-      message: () => 'Неверный формат ссылки на трейлер',
+      message: () => WRONG_LINK_ERROR_MESSAGE,
     },
   },
   trailerLink: {
     type: String,
-    required: [true, 'Обязательно добавьте ссылку на трейлер фильма'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
     validate: {
       validator(v) { return regex.test(v); },
-      message: () => 'Неверный формат ссылки на трейлер',
+      message: () => WRONG_LINK_ERROR_MESSAGE,
     },
   },
   thumbnail: {
     type: String,
-    required: [true, 'Обязательно добавьте ссылку на миниатюру постера к фильму'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
     validate: {
       validator(v) { return regex.test(v); },
-      message: () => 'Неверный формат ссылки на трейлер',
+      message: () => WRONG_LINK_ERROR_MESSAGE,
     },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: [true, 'Поле owner обязательное'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   movieId: {
     type: Number,
@@ -58,11 +59,11 @@ const movieSchema = new mongoose.Schema({
   },
   nameRU: {
     type: String,
-    required: [true, 'Обязательно добавьте название фильма на русском языке'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
   nameEN: {
     type: String,
-    required: [true, 'Обязательно добавьте название фильма на английском языке'],
+    required: [true, TOTAL_ERROR_CREATION_MESSAGE],
   },
 });
 
