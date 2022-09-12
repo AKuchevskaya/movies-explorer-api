@@ -29,33 +29,43 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : SECRET_KEY,
         { expiresIn: '7d' }, // токен будет просрочен через 7 дней после создания
       );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-      }).send({
-        name: user.name,
-        email: user.email,
-        _id: user._id,
-      });
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+        })
+        .send({
+          name: user.name,
+          email: user.email,
+          _id: user._id,
+        });
       // }).send({ token });
     })
     .catch(next);
 };
 
-module.exports.logout = (req, res) => {
-  res.clearCookie('jwt', { httpOnly: true, sameSite: true })
-    .send({ message: UNAUTHORIZED_MESSAGE });
+// module.exports.logout = (req, res) => {
+//   res
+//     .clearCookie('jwt', { httpOnly: true, sameSite: true })
+//     .send({ message: UNAUTHORIZED_MESSAGE });
+// };
+module.exports.logout = (req, res, next) => {
+  res
+    .clearCookie('jwt', {
+      // Вы не можете получить или установить файлы cookie httpOnly из браузера, только с сервера
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    })
+    .send({ message: UNAUTHORIZED_MESSAGE })
+    .catch((err) => next(err));
 };
-
 module.exports.createUser = (req, res, next) => {
-  const {
-    name,
-    email,
-    password,
-  } = req.body;
-  bcrypt.hash(password, 10)
+  const { name, email, password } = req.body;
+  bcrypt
+    .hash(password, 10)
     .then((hash) => User.create({
       name,
       email,
@@ -65,11 +75,13 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => {
       const createdUser = user.toObject();
       delete createdUser.password;
-      res.status(SUCCESSFUL_STATUS_CODE)
-        .send({ data: createdUser });
+      res.status(SUCCESSFUL_STATUS_CODE).send({ data: createdUser });
     })
     .catch((err) => {
-      if (err.name === 'MongoServerError' && err.code === MONGO_DUPLICATE_ERROR_CODE) {
+      if (
+        err.name === 'MongoServerError'
+        && err.code === MONGO_DUPLICATE_ERROR_CODE
+      ) {
         next(new ConflictError(CONFLICT_EMAIL_ERROR_MESSAGE));
       } else {
         next(err);
@@ -104,7 +116,11 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadReqError(CAST_OR_VALIDATION_ERROR_MESSAGE));
-      } if (err.name === 'MongoServerError' || err.code === MONGO_DUPLICATE_ERROR_CODE) {
+      }
+      if (
+        err.name === 'MongoServerError'
+        || err.code === MONGO_DUPLICATE_ERROR_CODE
+      ) {
         next(new ConflictError(CONFLICT_EMAIL_ERROR_MESSAGE));
       } else {
         next(err);

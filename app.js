@@ -16,6 +16,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { LOCAL_DB } = require('./constants/config');
 
 const { NODE_ENV, PORT = 3000, DB } = process.env;
+// const { NODE_ENV, PORT = 3001, DB } = process.env;
 const app = express();
 const {
   CAST_OR_VALIDATION_ERROR_MESSAGE,
