@@ -1,0 +1,25 @@
+module.exports.SUCCESSFUL_STATUS_CODE = 200;
+module.exports.CAST_OR_VALIDATION_ERROR_CODE = 400;
+module.exports.UNAUTHORIZED_ERROR_CODE = 401;
+module.exports.FORBIDDEN_ERROR_CODE = 403;
+module.exports.NOT_FOUND_ERROR_CODE = 404;
+module.exports.CONFLICT_EMAIL_ERROR_CODE = 409;
+module.exports.SERVER_ERROR_CODE = 500;
+module.exports.MONGO_DUPLICATE_ERROR_CODE = 11000;
+
+module.exports.CAST_OR_VALIDATION_ERROR_MESSAGE = 'Переданы некорректные данные';
+module.exports.UNAUTHORIZED_ERROR_MESSAGE = 'Пожалуйста авторизуйтесь.';
+module.exports.FORBIDDEN_ERROR_MESSAGE = 'У вас нет необходимых прав';
+module.exports.NOT_FOUND_DATA_MESSAGE = 'Данные не найдены';
+module.exports.NOT_FOUND_ERROR_MESSAGE = 'Страница не существует';
+module.exports.CONFLICT_EMAIL_ERROR_MESSAGE = 'Такой email уже существует.';
+module.exports.SERVER_ERROR_MESSAGE = 'Ошибка сервера по умолчанию';
+module.exports.CRASH_ERROR_MESSAGE = 'Сервер сейчас упадёт';
+module.exports.UNAUTHORIZED_MESSAGE = 'Пользователь больше не авторизован';
+module.exports.RATE_LIMIT_ERROR_MESSAGE = 'Превышено количество запросов';
+module.exports.TOTAL_ERROR_CREATION_MESSAGE = 'Обязательно заполните данное поле';
+module.exports.WRONG_LINK_ERROR_MESSAGE = 'Неверный формат ссылки';
+module.exports.WRONG_EMAIL_ERROR_MESSAGE = 'Неверный формат email';
+module.exports.DUPLICATE_EMAIL_ERROR_MESSAGE = 'Пользователь с такой почтой уже существует';
+module.exports.SHORT_WORD_ERROR_MESSAGE = 'Слишком короткое слово, добавьте символов';
+module.exports.LONG_WORD_ERROR_MESSAGE = 'Слишком длинное слово, сократите, пожалуйста';
